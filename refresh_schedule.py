@@ -12,23 +12,29 @@ def refresh_files(file_list,time_now):
 
         # Open the workbook in said instance of Excel
         wb = xlapp.workbooks.open(file)
+        read_only = wb.ReadOnly
 
         # Optional, e.g. if you want to debug
-        xlapp.Visible = True
+        #xlapp.Visible = True
         print('Working on file {}'.format(file))
-
+        
+        print('is Read Only? {}'.format(read_only))
         # Refresh all data connections.
         wb.Model.Refresh()
         wb.RefreshAll()
         xlapp.CalculateUntilAsyncQueriesDone()
-        try:
-            wb.Save()
-            print('Saved')
-        except: 
+        if (read_only):
             error_list.append(file)
             print('File was not saved')
-            continue
-        wb.Close(True)
+            wb.Close()
+            #wb.Close(True)
+        else:
+            #read_only = wb.ReadOnly()
+            wb.Save()
+            wb.Close()
+            #print('is Read Only? {}'.format(read_only))
+
+        
             
 
     # Quit
